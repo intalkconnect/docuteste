@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  docs:
+    build: .
+    container_name: ninebasic-docs
+    ports:
+      - "4000:80"            # http://SEU_HOST:4000
+    restart: unless-stopped
