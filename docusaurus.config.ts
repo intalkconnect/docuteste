@@ -1,94 +1,94 @@
-// docusaurus.config.ts
-// @ts-check
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-
-// Tenta carregar temas do Prism; se não houver, não quebra o build
-let prismThemes: any | undefined;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  prismThemes = require('prism-react-renderer').themes;
-} catch {
-  prismThemes = undefined;
-}
+import {themes as prismThemes} from 'prism-react-renderer';
 
 const config: Config = {
   title: 'Ninechat Docs',
-  tagline: 'API & Guias',
+  tagline: 'APIs e Guias',
   url: 'https://docs.ninechat.com.br',
-  baseUrl: '/', // domínio próprio -> sempre "/"
+  baseUrl: '/',
+  favicon: 'img/favicon.ico',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
-  organizationName: 'ninechat',
-  projectName: 'docs',
+  // Opcional: se quiser pt-BR como default e único
+  // i18n: { defaultLocale: 'pt-BR', locales: ['pt-BR'] },
 
   presets: [
     [
       '@docusaurus/preset-classic',
       {
         docs: {
-          routeBasePath: 'docs',
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: undefined
+          // Coloca docs na raiz ("/"), se preferir "/docs", troque para routeBasePath: 'docs'
+          routeBasePath: '/',
+          sidebarPath: require.resolve('./sidebars.ts'),
+          editUrl: 'https://github.com/intalkconnect/docuteste/edit/main/',
         },
         blog: false,
-        theme: {
-          customCss: require.resolve('./src/css/custom.css'),
-        },
+        theme: { customCss: require.resolve('./src/css/custom.css') },
       } satisfies Preset.Options,
     ],
   ],
 
-  // Página de referência da API em /api
+  // 🔴 Importante: use o Redocusaurus aqui (plugins), não em "presets"
   plugins: [
     [
       'redocusaurus',
       {
+        // Você pode apontar specs locais (em /static) ou remotas
         specs: [
           {
-            id: 'ninechat-api',
-            spec: 'openapi.json', // vem de /static/openapi.json
-            route: '/api'
-          }
-        ],
-        redocOptions: {
-          hideDownloadButton: false,
-          pathInMiddlePanel: true,
-          expandResponses: '200,201,4xx,5xx',
-          theme: {
-            colors: { primary: { main: '#2563eb' } },
-            typography: {
-              fontFamily: 'Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif'
+            id: 'ninebasic-remote',
+            route: '/api/ninebasic', // página ficará em /api/ninebasic
+            // Use o RAW do GitHub (não a URL /blob/…)
+            spec:
+              'https://raw.githubusercontent.com/intalkconnect/ninebasic/86afae825ec5704689889df28b2ac6496f174329/openapi.json',
+            layout: {
+              title: 'Ninechat API',
+              description: 'Referência completa da API Ninechat',
             },
-            menu: { width: '280px' }
-          }
-        }
-      }
-    ]
+            redocOptions: {
+              hideDownloadButton: true,
+              expandResponses: '200,201',
+              pathInMiddlePanel: true,
+              hideHostname: true,
+              theme: {
+                colors: { primary: { main: '#0ea5e9' } },
+                typography: {
+                  fontSize: '14px',
+                  lineHeight: '1.55',
+                  fontFamily:
+                    "-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Arial,sans-serif",
+                  headings: { fontFamily: 'inherit', fontWeight: '800' },
+                },
+                sidebar: { backgroundColor: '#ffffff' },
+              },
+            },
+          },
+        ],
+      },
+    ],
   ],
 
   themeConfig: {
     image: 'img/social-card.png',
     navbar: {
       title: 'Ninechat',
-      logo: { alt: 'Ninechat', src: 'img/logo.png' }, // opcional
+      logo: { alt: 'Ninechat', src: 'img/logo.svg' },
       items: [
-        { to: '/api', label: 'API Reference', position: 'left' },
-        { to: '/docs', label: 'Guias', position: 'left' }
+        { to: '/', label: 'Guias', position: 'left' },
+        { to: '/api/ninebasic', label: 'API Reference', position: 'left' },
+        { href: 'https://github.com/intalkconnect/docuteste', label: 'GitHub', position: 'right' },
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
-        { title: 'Docs', items: [{ label: 'API', to: '/api' }, { label: 'Guias', to: '/docs' }] }
+        { title: 'Docs', items: [{ label: 'API', to: '/api/ninebasic' }] },
+        { title: 'GitHub', items: [{ label: 'docuteste', href: 'https://github.com/intalkconnect/docuteste' }] },
       ],
       copyright: `© ${new Date().getFullYear()} Ninechat`,
     },
-    // Só aplica Prism se o pacote existir
-    prism: prismThemes
-      ? { theme: prismThemes.github, darkTheme: prismThemes.dracula }
-      : undefined,
+    prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
   },
 };
 
