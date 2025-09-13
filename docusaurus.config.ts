@@ -1,58 +1,66 @@
+// docusaurus.config.ts
 // @ts-check
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme  = require('prism-react-renderer/themes/dracula');
+import type {Config} from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
 
-module.exports = {
+// Tenta carregar temas do Prism; se não houver, não quebra o build
+let prismThemes: any | undefined;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  prismThemes = require('prism-react-renderer').themes;
+} catch {
+  prismThemes = undefined;
+}
+
+const config: Config = {
   title: 'Ninechat Docs',
   tagline: 'API & Guias',
   url: 'https://docs.ninechat.com.br',
-  baseUrl: '/',                 // importante p/ domínio próprio
+  baseUrl: '/', // domínio próprio -> sempre "/"
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'ninechat', // qualquer valor
-  projectName: 'docs',          // qualquer valor
+  organizationName: 'ninechat',
+  projectName: 'docs',
 
   presets: [
     [
       '@docusaurus/preset-classic',
       {
         docs: {
-          routeBasePath: 'docs',        // /docs
+          routeBasePath: 'docs',
           sidebarPath: require.resolve('./sidebars.js'),
+          editUrl: undefined
         },
         blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      },
+      } satisfies Preset.Options,
     ],
   ],
 
+  // Página de referência da API em /api
   plugins: [
     [
       'redocusaurus',
       {
-        // página da API em /api
         specs: [
           {
             id: 'ninechat-api',
-            spec: 'openapi.json',       // servido a partir de /static
+            spec: 'openapi.json', // vem de /static/openapi.json
             route: '/api'
           }
         ],
-        theme: {
-          // customização do Redoc (sem branding)
-          // (cores, fontes, etc)
-          primaryColor: '#2563eb',
-        },
         redocOptions: {
           hideDownloadButton: false,
-          expandResponses: '200,201,4xx,5xx',
           pathInMiddlePanel: true,
+          expandResponses: '200,201,4xx,5xx',
           theme: {
             colors: { primary: { main: '#2563eb' } },
-            typography: { fontFamily: 'Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif' },
+            typography: {
+              fontFamily: 'Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif'
+            },
             menu: { width: '280px' }
           }
         }
@@ -64,20 +72,24 @@ module.exports = {
     image: 'img/social-card.png',
     navbar: {
       title: 'Ninechat',
-      logo: { alt: 'Ninechat', src: 'img/logo.png' }, // coloque um logo em static/img/logo.png
+      logo: { alt: 'Ninechat', src: 'img/logo.png' }, // opcional
       items: [
         { to: '/api', label: 'API Reference', position: 'left' },
-        { to: '/docs', label: 'Guias', position: 'left' },
-        { href: 'https://ninechat.com.br', label: 'Site', position: 'right' }
+        { to: '/docs', label: 'Guias', position: 'left' }
       ],
     },
     footer: {
       style: 'dark',
       links: [
-        { title: 'Docs', items: [{ label: 'API', to: '/api' }, { label: 'Guias', to: '/docs' }] },
+        { title: 'Docs', items: [{ label: 'API', to: '/api' }, { label: 'Guias', to: '/docs' }] }
       ],
       copyright: `© ${new Date().getFullYear()} Ninechat`,
     },
-    prism: { theme: lightCodeTheme, darkTheme: darkCodeTheme },
+    // Só aplica Prism se o pacote existir
+    prism: prismThemes
+      ? { theme: prismThemes.github, darkTheme: prismThemes.dracula }
+      : undefined,
   },
 };
+
+export default config;
