@@ -1,19 +1,29 @@
 {
   "name": "ninechat-docs",
+  "version": "0.0.0",
   "private": true,
-  "version": "1.0.0",
   "scripts": {
-    "start": "docusaurus start --host 0.0.0.0 --port 5173",
+    "start": "docusaurus start",
     "build": "docusaurus build",
-    "serve": "docusaurus serve --host 0.0.0.0 --port 5173"
+    "serve": "docusaurus serve",
+    "format": "prettier -w ."
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",
     "@docusaurus/preset-classic": "3.8.1",
     "clsx": "2.1.1",
-    "prism-react-renderer": "2.4.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "redocusaurus": "1.10.5"
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "redocusaurus": "2.5.0",
+    "prism-react-renderer": "2.4.1"
+  },
+  "devDependencies": {
+    "prettier": "3.3.3",
+    "typescript": "5.6.2",
+    "@types/node": "22.7.5",
+    "@types/react": "18.3.5"
+  },
+  "engines": {
+    "node": ">=18 <=22"
   }
 }
